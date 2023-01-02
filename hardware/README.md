@@ -8,3 +8,4 @@ This directory will house any code needed for rpi GPIO or arduino. As well as an
   - Outboard > Pi GPIO 
   - Outboard > arduino > Pi GPIO
 - Server to expose data from outboard wiring harness
+- Can we read the analog data from signalk and send as a part of the protocol
