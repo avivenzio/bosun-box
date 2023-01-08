@@ -1,20 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import { Display } from "./signalK/Display";
+import theme from "./theme";
 
 export const App = () => {
-  useEffect(() => {
-    const websocket = new WebSocket(
-      "ws://localhost:3000/signalk/v1/stream?sendMeta=all"
-    );
-    websocket.onopen = () => {
-      console.log("connected");
-    };
-    websocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log(data);
-    };
-    return () => {
-      websocket.close();
-    };
-  }, []);
-  return <>APP</>;
+  return (
+    <ChakraProvider theme={theme}>
+      <Display />
+    </ChakraProvider>
+  );
 };
