@@ -28,7 +28,7 @@ export const useSignalK = (): { signalKState: SignalKData } => {
 
   useEffect(() => {
     const websocket = new WebSocket(
-      "ws://localhost:3000/signalk/v1/stream?sendMeta=all"
+      `ws://${window.location.hostname}:${3000}/signalk/v1/stream?sendMeta=all`
     );
     websocket.onopen = () => {
       console.log("connected");

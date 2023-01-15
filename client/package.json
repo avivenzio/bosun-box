@@ -33,6 +33,8 @@
     "@chakra-ui/react": "^2.4.6",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@fontsource/roboto-mono": "^4.5.8",
     "framer-motion": "^8.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

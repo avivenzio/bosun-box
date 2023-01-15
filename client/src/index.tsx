@@ -7,8 +7,8 @@ import theme from "./theme";
 const container = document.getElementById("app-root")!;
 const root = createRoot(container);
 root.render(
-    <>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <App />
-    </>
+  <>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <App />
+  </>
 );
