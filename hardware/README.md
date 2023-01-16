@@ -9,3 +9,10 @@ This directory will house any code needed for rpi GPIO or arduino. As well as an
   - Outboard > arduino > Pi GPIO
 - Server to expose data from outboard wiring harness
 - Can we read the analog data from signalk and send as a part of the protocol
+
+
+### GPIO
+- going to use https://github.com/fivdi/pigpio 
+  - needs a c library installed
+  - has more features than some of the other node modules for GPIO, although may be more complicated
+
