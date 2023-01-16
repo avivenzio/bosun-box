@@ -7,4 +7,4 @@ def set_brightness(value: float):
     BRIGHTNESS_PIN.value = value
 
 def get_brightness():
-    return BRIGHTNESS_PIN
+    return BRIGHTNESS_PIN.value
