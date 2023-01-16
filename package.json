@@ -1,8 +1,7 @@
 {
     "name": "boat-stuff",
     "workspaces": [
-        "client",
-        "hardware"
+        "client"
     ],
     "scripts": {
         "lint": "eslint */src/*",
