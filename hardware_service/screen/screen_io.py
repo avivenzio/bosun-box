@@ -1,10 +1,20 @@
 from gpiozero import PWMLED
 from time import sleep
 
-BRIGHTNESS_PIN = PWMLED(18)
+class MockPWMLED:
+    def __init__(self, pin_num = None, value = 0):
+        self.value = value
+        self.pin_num = pin_num
 
-def set_brightness(value: float):
-    BRIGHTNESS_PIN.value = value
+class ScreenIO:
+    def __init__(self, mock = False):
+        if mock:
+            self.brightness_pin = MockPWMLED(18)
+        else:
+            self.brightness_pin = PWMLED(18)
 
-def get_brightness():
-    return BRIGHTNESS_PIN.value
+    def set_brightness(self, value: float):
+        self.brightness_pin.value = value
+
+    def get_brightness(self):
+        return self.brightness_pin.value

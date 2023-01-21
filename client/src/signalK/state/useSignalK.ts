@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import config from "../../../config/config.json";
 
 interface SignalKData {
   "navigation.position"?: { longitude: number; latitude: number };
@@ -28,7 +29,7 @@ export const useSignalK = (): { signalKState: SignalKData } => {
 
   useEffect(() => {
     const websocket = new WebSocket(
-      `ws://${window.location.hostname}:${3000}/signalk/v1/stream?sendMeta=all`
+      `ws://${window.location.hostname}:${config.signalk.port}/signalk/v1/stream?sendMeta=all`
     );
     websocket.onopen = () => {
       console.log("connected");

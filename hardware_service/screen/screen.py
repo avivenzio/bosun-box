@@ -1,5 +1,7 @@
 from flask import Blueprint, request
-from screen.screen_io import set_brightness, get_brightness
+from screen.screen_io import ScreenIO
+
+SCREEN_IO = ScreenIO(True);
 
 screen_bp = Blueprint('screen', __name__)
 
@@ -9,7 +11,7 @@ def screen_resource():
     if request.method == 'PATCH':
         req_body = request.json
         if req_body.get('brightness', None) is not None:
-            set_brightness(req_body["brightness"])
+            SCREEN_IO.set_brightness(req_body["brightness"])
     return {
-        "brightness": get_brightness()
+        "brightness": SCREEN_IO.get_brightness()
     }
