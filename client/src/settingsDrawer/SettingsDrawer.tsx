@@ -9,12 +9,12 @@ import {
   DrawerHeader,
   DrawerOverlay,
   IconButton,
-  Input,
   useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon, MoonIcon } from "@chakra-ui/icons";
 import React from "react";
 import { BrightnessSlider } from "./BrightnessSlider";
+import { useShutdown } from "../hooks/useShutdown";
 
 export const SettingsDrawerContainer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,6 +38,8 @@ const SettingsDrawer = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
+  const { mutate } = useShutdown();
+
   return (
     <Drawer isOpen={isOpen} placement="bottom" onClose={onClose} size="md">
       <DrawerOverlay />
@@ -55,6 +57,7 @@ const SettingsDrawer = ({
             colorScheme="red"
             size="lg"
             variant="solid"
+            onClick={() => mutate()}
           >
             Shutdown
           </Button>
