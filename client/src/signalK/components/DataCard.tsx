@@ -30,7 +30,7 @@ const SignalKStat = ({ label, data, unit, isFull }: SignalKStatProps) => {
   return (
     <Stat size={isFull ? "full" : "xl"}>
       {label ? <StatLabel>{label}</StatLabel> : null}
-      <StatNumber>{data ? data.toFixed(4) : "--"}</StatNumber>
+      <StatNumber>{data ? data.toFixed(3) : "--"}</StatNumber>
       {unit ? <StatHelpText>{unit}</StatHelpText> : null}
     </Stat>
   );

@@ -1,13 +1,13 @@
 import React from "react";
-import { DataPanel } from "./signalK/DataPanel";
 import { QueryProvider } from "./providers/QueryProvider";
 import { UIProvider } from "./providers/UIProvider";
+import { DataPanelPage } from "./signalK/DataPanelPage";
 
 export const App = () => {
   return (
     <UIProvider>
       <QueryProvider>
-        <DataPanel />
+        <DataPanelPage />
       </QueryProvider>
     </UIProvider>
   );

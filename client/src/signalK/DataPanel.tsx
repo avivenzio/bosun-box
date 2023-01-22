@@ -9,7 +9,7 @@ export const DataPanel = () => {
   const [fullCard, setFullCard] = useState<Partial<DataCardProps | null>>(null);
 
   return (
-    <Box display="flex" flexDirection="column" boxSize={"98%"} margin="auto">
+    <Box display="flex" flexDirection="column">
       {fullCard === null ? (
         <>
           <Box width="100%">
