@@ -21,9 +21,10 @@ export function BrightnessSlider() {
     });
   };
   return (
-    <Box display="flex" gap={8} alignItems="center">
+    <Box display="flex" gap={8}>
       <Box flexGrow="1">
         <Slider
+          size="lg"
           id="slider"
           min={0}
           max={100}
@@ -33,13 +34,13 @@ export function BrightnessSlider() {
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
-          <SliderThumb>
+          <SliderThumb boxSize={8}>
             <SunIcon />
           </SliderThumb>
         </Slider>
       </Box>
       <Box flexGrow="0" flexShrink="0" flexBasis="75px" fontSize="2xl">
-        {data ? data.brightness * 100 : "--"} %
+        {sliderValue.toFixed(0)} %
       </Box>
     </Box>
   );
