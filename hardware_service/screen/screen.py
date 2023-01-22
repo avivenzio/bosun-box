@@ -1,7 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app
 from screen.screen_io import ScreenIO
+from utils import is_mock_mode
 
-SCREEN_IO = ScreenIO(True);
+SCREEN_IO = ScreenIO(is_mock_mode());
 
 screen_bp = Blueprint('screen', __name__)
 

@@ -1,5 +1,7 @@
+import logging
 from gpiozero import PWMLED
-from time import sleep
+
+logger = logging.getLogger('app.screen.screen_io')
 
 class MockPWMLED:
     def __init__(self, pin_num = None, value = 0):
@@ -14,7 +16,9 @@ class ScreenIO:
             self.brightness_pin = PWMLED(18)
 
     def set_brightness(self, value: float):
+        logger.info(f'Setting brightness - {value}');
         self.brightness_pin.value = value
 
     def get_brightness(self):
+        logger.info(f'Getting brightness - {self.brightness_pin.value}');
         return self.brightness_pin.value
