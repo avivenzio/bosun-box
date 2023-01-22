@@ -4,12 +4,20 @@ import {
   CardHeader,
   CardProps,
   Heading,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Stat,
   StatGroup,
   StatHelpText,
   StatLabel,
   StatNumber,
+  useDisclosure,
 } from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import React from "react";
 
 interface SignalKStatProps {
@@ -22,8 +30,6 @@ interface SignalKStatProps {
 export interface DataCardProps extends CardProps {
   headerText: string;
   stats: SignalKStatProps[];
-  isFull?: boolean;
-  onExpand: (props: Partial<DataCardProps>) => void;
 }
 
 const SignalKStat = ({ label, data, unit, isFull }: SignalKStatProps) => {
@@ -39,28 +45,53 @@ const SignalKStat = ({ label, data, unit, isFull }: SignalKStatProps) => {
 export const DataCard = ({
   headerText,
   stats,
-  onExpand,
-  isFull = false,
   ...cardProps
 }: DataCardProps) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Card {...cardProps} onClick={() => onExpand({ headerText, stats })}>
-      <CardHeader paddingLeft={5} paddingTop={5} padding={""}>
-        <Heading size={isFull ? "4xl" : "2xl"}>{headerText}</Heading>
-      </CardHeader>
-      <CardBody>
-        {stats.length > 1 ? (
-          <StatGroup>{renderSignalKStats(stats, false)}</StatGroup>
-        ) : (
-          renderSignalKStats(stats, isFull)
-        )}
-      </CardBody>
-    </Card>
+    <>
+      <Card {...cardProps} onClick={onOpen}>
+        <CardHeader paddingLeft={5} paddingTop={5} padding={""}>
+          <Heading size="2xl">{headerText}</Heading>
+        </CardHeader>
+        <CardBody>
+          {stats.length > 1 ? (
+            <StatGroup>{renderSignalKStats(stats, false)}</StatGroup>
+          ) : (
+            renderSignalKStats(stats, false)
+          )}
+        </CardBody>
+      </Card>
+      <Modal onClose={onClose} size="full" isOpen={isOpen} trapFocus={false}>
+        <ModalOverlay />
+        <ModalContent padding="10px">
+          <ModalHeader display="flex" justifyContent="space-between">
+            <Heading size="4xl">{headerText}</Heading>
+            <IconButton
+              aria-label="Go Back"
+              size="lg"
+              icon={<ArrowBackIcon />}
+              onClick={onClose}
+            />
+          </ModalHeader>
+          <ModalBody>
+            {stats.length > 1 ? (
+              <StatGroup>{renderSignalKStats(stats, false)}</StatGroup>
+            ) : (
+              renderSignalKStats(stats, true)
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
 const renderSignalKStats = (stats: SignalKStatProps[], isFull = false) => {
-  return stats.map((statProps) => {
-    return <SignalKStat isFull={isFull} {...statProps} />;
+  return stats.map((statProps, i) => {
+    return (
+      <SignalKStat key={`SignalKStat_${i}`} isFull={isFull} {...statProps} />
+    );
   });
 };
