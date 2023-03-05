@@ -14,6 +14,7 @@ import { SettingsIcon } from "@chakra-ui/icons";
 import React from "react";
 import { BrightnessSlider } from "./BrightnessSlider";
 import { ShutdownButton } from "./ShutdownButton";
+import { ColorModeToggle } from "./ColorModeToggle";
 
 export const SettingsDrawerContainer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,7 +49,8 @@ const SettingsDrawer = ({
           <BrightnessSlider />
         </DrawerBody>
 
-        <DrawerFooter>
+        <DrawerFooter display="flex" justifyContent="space-between">
+          <ColorModeToggle />
           <ShutdownButton />
         </DrawerFooter>
       </DrawerContent>

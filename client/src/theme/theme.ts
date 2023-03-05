@@ -15,8 +15,8 @@ const theme = extendTheme({
   config,
   components: { Stat: statTheme },
   fonts: {
-    heading: "'Roboto Mono', monospace",
-    body: "'Roboto Mono', monospace",
+    heading: "'Roboto', sans-serif;",
+    body: "'Roboto', sans-serif;",
   },
 });
 

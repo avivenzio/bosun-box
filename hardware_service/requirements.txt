@@ -2,3 +2,4 @@
 Flask
 gpiozero
 flask-cors
+waitress
