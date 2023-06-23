@@ -14,5 +14,5 @@ Any scripts to start/stop/build all services will live here.
   - node 16
 
 ### Notes
-- chromium kiosk mode - may be interesting to use something like below:
+- chromium kiosk mode
   - `chromium-browser --kiosk --app=localhost:8080`

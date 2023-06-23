@@ -7,7 +7,7 @@ npm install
 echo "Building..."
 npm run build
 cd ..
-echo "Copying to /home/pi/boat-stuff-client"
-scp -r ./client/dist pi@192.168.50.216:/home/pi/boat-stuff-dist/client
-scp -r ./client/package.json pi@192.168.50.216:/home/pi/boat-stuff-dist/client
+echo "Copying to /home/pi/bosun-box-client"
+scp -r ./client/dist pi:/home/pi/bosun-box-dist/client
+scp -r ./client/package.json pi:/home/pi/bosun-box-dist/client
 echo "Run npm start:prod"
