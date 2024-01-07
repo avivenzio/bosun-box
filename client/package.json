@@ -6,8 +6,6 @@
   "scripts": {
     "start": "webpack serve --port 8080",
     "build": "NODE_ENV=production webpack",
-    "start:prod": "serve -p 8080 dist",
-    "kiosk": "npm run start:prod & sleep 5 && chromium-browser --kiosk --app=localhost:8080",
     "lint": "eslint src/*",
     "format": "prettier --write src/*",
     "tauri": "tauri"
@@ -39,11 +37,11 @@
     "@emotion/styled": "^11.10.5",
     "@fontsource/roboto": "^4.5.8",
     "@fontsource/roboto-mono": "^4.5.8",
+    "@tauri-apps/api": "^1.5.3",
     "framer-motion": "^8.1.7",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-query": "^3.39.2",
-    "serve": "^14.1.2"
+    "react-query": "^3.39.2"
   }
 }

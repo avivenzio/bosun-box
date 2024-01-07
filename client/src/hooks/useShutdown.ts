@@ -1,8 +1,8 @@
 import { useMutation } from "react-query";
-import { hwApi } from "../utils/api";
+import { invoke } from "@tauri-apps/api/tauri";
 
 const setScreenConfig = async () => {
-  return hwApi<undefined>("/power/shutdown", "POST");
+  invoke("shutdown");
 };
 
 export const useShutdown = () => {

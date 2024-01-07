@@ -1,7 +1,4 @@
 {
-  "hardwareService": {
-    "port": 5001
-  },
   "signalk": {
     "port": 3000
   }

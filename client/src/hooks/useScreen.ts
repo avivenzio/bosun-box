@@ -1,16 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { hwApi } from "../utils/api";
+import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
 
 export interface ScreenConfig {
   brightness: number;
 }
 
 const getScreenConfig = async () => {
-  return hwApi<ScreenConfig>("/screen");
+  const brightness = await invoke<string>("get_brightness");
+  return {
+    brightness: parseFloat(brightness),
+  };
 };
 
 const setScreenConfig = async (screenConfig: ScreenConfig) => {
-  return hwApi<ScreenConfig>("/screen", "PATCH", screenConfig);
+  invoke("set_brightness", screenConfig as unknown as InvokeArgs);
 };
 
 export const useScreen = () => {

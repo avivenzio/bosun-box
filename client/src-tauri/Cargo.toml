@@ -20,7 +20,7 @@ serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.5.4", features = [] }
 log = "0.4.20"
 simple_logger = "4.3.0"
-# rppal = "0.16.1"
+rppal = "0.16.1"
 serialport = { version = "4.3.0", default-features = false }
 
 [features]
