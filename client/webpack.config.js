@@ -8,6 +8,7 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: __dirname + "/dist/",
+    pathinfo: false,
   },
   module: {
     rules: [
@@ -17,7 +18,7 @@ module.exports = {
         resolve: {
           extensions: [".ts", ".tsx", ".js", ".json"],
         },
-        use: "ts-loader",
+        use: "esbuild-loader",
       },
       {
         test: /\.css$/,
@@ -25,7 +26,10 @@ module.exports = {
       },
     ],
   },
-  devtool: prod ? undefined : "source-map",
+  cache: {
+    type: 'filesystem',
+  },
+  devtool: prod ? undefined : "cheap-module-source-map",
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",

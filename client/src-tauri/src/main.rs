@@ -4,18 +4,12 @@ use simple_logger::SimpleLogger;
 mod screen;
 mod power;
 mod utils;
-//mod nmea;
+mod nmea;
 use std::str;
 
 fn main() {
   SimpleLogger::new().env().init().unwrap();
-  let mm = utils::is_mock_mode();
-  log::warn!("This is an example message. {}", mm);
-  
-  let op = power::shutdown();
-  println!("-------");
-  println!("{}",op.status);
-  println!("{}", str::from_utf8(&op.stdout).unwrap());
+  log::warn!("This is an example message.");
   tauri::Builder::default()
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
