@@ -14,3 +14,4 @@ simple_logger = "4.3.0"
 rppal = "0.16.1"
 serialport = { version = "4.3.0", default-features = false }
 clap = "4.4.13"
+nmea-parser = "0.10.0"

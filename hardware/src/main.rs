@@ -1,33 +1,82 @@
-use std::io::{self, Write};
 use std::time::Duration;
-use serialport::{DataBits, StopBits, Parity};
+use std::io::BufReader;
+use std::io::BufRead;
+use nmea_parser::*;
 
 fn main() {
     let port = serialport::new("/dev/ttyS0", 4_800)
-        .timeout(Duration::from_millis(10))
-        .open();
-    let mut beef = 0;
-    match port {
-        Ok(mut port) => {
-            let mut serial_buf: Vec<u8> = vec![0; 1000];
-            println!("Receiving data");
-            while beef < 15000 {
-                beef+=1;
-                match port.read(serial_buf.as_mut_slice()) {
-                    Ok(t) => io::stdout().write_all(&serial_buf[..t]).unwrap(),
-                    Err(ref e) if e.kind() == io::ErrorKind::TimedOut => (),
-                    Err(e) => eprintln!("{:?}", e),
+        .timeout(Duration::from_millis(1000))
+        .open()
+        .expect("Failed to open serial port");
+    
+        let mut reader = BufReader::new(port);
+        let mut my_str = String::new();
+        let mut parser = NmeaParser::new();
+        loop {
+            reader.read_line(&mut my_str).unwrap();
+            let parse_result = parser.parse_sentence(&my_str);
+            let parsed_value = match parse_result {
+                Ok(val) => val,
+                Err(error) => {
+                    my_str.clear();
+                    continue;
+                },
+            };
+
+            match parsed_value {
+                // GGA —Global Positioning System Fixed Data
+                // might be easier to just use RMC
+                // ParsedMessage::Gga(gga) => {
+                //     println!("Source:    {}",     gga.source);
+                //     println!("Latitude:  {:.3}°", gga.latitude.unwrap());
+                //     println!("Longitude: {:.3}°", gga.longitude.unwrap());
+                //     println!("");
+                // },
+                // RMC—Recommended Minimum Specific GNSS Data
+                ParsedMessage::Rmc(rmc) => {
+                    println!("Source:  {}",        rmc.source);
+                    println!("Speed:   {:.1} kts", rmc.sog_knots.unwrap());
+                    println!("Bearing: {}°",       rmc.bearing.unwrap());
+                    println!("Time:    {}",        rmc.timestamp.unwrap());
+                    println!("Latitude:  {:.3}°", rmc.latitude.unwrap());
+                    println!("Longitude: {:.3}°", rmc.longitude.unwrap());
+                    println!("");
+                },
+                // VTG—Course Over Ground and Ground Speed
+                ParsedMessage::Vtg(vtg) => {
+                    println!("Source:  {}",        vtg.source);
+                    println!("cog true: {}", vtg.cog_true.unwrap());
+                    println!("cog magnetic: {}", vtg.cog_magnetic.unwrap());
+                    println!("sog_knots:  {}",        vtg.sog_knots.unwrap());
+                    println!("");
+                },
+                // DPT - Depth of Water
+                ParsedMessage::Dpt(dpt) => {
+                    println!("depth: {}", dpt.depth_relative_to_transducer.unwrap());
+                    println!("");
+                },
+                _ => {
                 }
-                //println!("resetting the BUF");
-                serial_buf = vec![0; 1000];
             }
+            my_str.clear();
         }
-        Err(e) => {
-            eprintln!("Failed to open \"{}\". Error: {}", "bah", e);
-            ::std::process::exit(1);
-        }
-    }
 }
+
+
+// let mut serial_port = serialport::new("/dev/serial0", 9600)
+//         .timeout(Duration::from_millis(1000))
+//         .open()
+//         .expect("Failed to open serial port");
+
+//     let output = "This is a test.\n".as_bytes();
+//     serial_port.write(output).expect("Write failed!");
+//     serial_port.flush().unwrap();
+
+//     let mut reader = BufReader::new(serial_port);
+//     let mut my_str = String::new();
+//     reader.read_line(&mut my_str).unwrap();
+
+//     println!("{}", my_str);
 
 
 //use std::error::Error;
