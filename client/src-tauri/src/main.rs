@@ -7,6 +7,7 @@ mod power;
 mod utils;
 mod nmea;
 use std::str;
+use tauri::{Window};
 
 struct AppState {
   brightness_pin: Pwm,
@@ -33,13 +34,26 @@ fn shutdown() {
   power::shutdown();
 }
 
+// init a background process on the command, and emit periodic events only to the window that used the command
+#[tauri::command]
+fn init_nmea(window: Window) {
+
+  let handle_data = move |data: nmea::NMEAUpdate| {
+    window.emit("nmea_data", data).unwrap();
+  };
+  // handle data will take the parsed result & make the tauri event
+  std::thread::spawn(move || {
+    nmea::begin_reading(handle_data);
+  });
+}
+
 fn main() {
   SimpleLogger::new().env().init().unwrap();
   log::info!("Firing up the box");
   log::info!("MOCK_MODE={}", utils::is_mock_mode());
   tauri::Builder::default()
     .manage(init_state())
-    .invoke_handler(tauri::generate_handler![get_brightness, set_brightness, shutdown])
+    .invoke_handler(tauri::generate_handler![get_brightness, set_brightness, shutdown, init_nmea])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }

@@ -2,9 +2,11 @@ import { Box } from "@chakra-ui/react";
 import React from "react";
 import { DataCard } from "./components/DataCard";
 import { useSignalK } from "./state/useSignalK";
+import { useNmea } from "./state/useNmea";
 
 export const DataPanel = () => {
   const { signalKState } = useSignalK();
+  useNmea();
 
   return (
     <Box display="flex" flexDirection="column">
