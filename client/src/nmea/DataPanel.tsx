@@ -1,12 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import React from "react";
 import { DataCard } from "./components/DataCard";
-import { useSignalK } from "./state/useSignalK";
 import { useNmea } from "./state/useNmea";
 
 export const DataPanel = () => {
-  const { signalKState } = useSignalK();
-  useNmea();
+  const { nmeaState } = useNmea();
 
   return (
     <Box display="flex" flexDirection="column">
@@ -16,11 +14,11 @@ export const DataPanel = () => {
           stats={[
             {
               label: "Latitude",
-              data: signalKState["navigation.position"]?.latitude,
+              data: nmeaState.latitude,
             },
             {
               label: "Longitude",
-              data: signalKState["navigation.position"]?.longitude,
+              data: nmeaState.longitude,
             },
           ]}
         />
@@ -30,8 +28,8 @@ export const DataPanel = () => {
           headerText="SOG"
           stats={[
             {
-              data: signalKState["navigation.speedOverGround"],
-              unit: "m/s",
+              data: nmeaState.sogKnots,
+              unit: "knots",
             },
           ]}
           flexGrow="1"
@@ -40,7 +38,7 @@ export const DataPanel = () => {
           headerText="COG"
           stats={[
             {
-              data: signalKState["navigation.courseOverGroundTrue"],
+              data: nmeaState.cogTrue,
               unit: "Deg",
             },
           ]}
@@ -50,7 +48,7 @@ export const DataPanel = () => {
           headerText="Depth"
           stats={[
             {
-              data: signalKState["environment.depth.belowTransducer"],
+              data: nmeaState.depth,
               unit: "m",
             },
           ]}

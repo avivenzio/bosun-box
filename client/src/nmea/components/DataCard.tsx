@@ -20,7 +20,7 @@ import {
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import React from "react";
 
-interface SignalKStatProps {
+interface StatProps {
   label?: string;
   data?: number;
   unit?: string;
@@ -29,10 +29,10 @@ interface SignalKStatProps {
 
 export interface DataCardProps extends CardProps {
   headerText: string;
-  stats: SignalKStatProps[];
+  stats: StatProps[];
 }
 
-const SignalKStat = ({ label, data, unit, isFull }: SignalKStatProps) => {
+const SignalKStat = ({ label, data, unit, isFull }: StatProps) => {
   return (
     <Stat size={isFull ? "full" : "xl"}>
       {label ? <StatLabel>{label}</StatLabel> : null}
@@ -88,7 +88,7 @@ export const DataCard = ({
   );
 };
 
-const renderSignalKStats = (stats: SignalKStatProps[], isFull = false) => {
+const renderSignalKStats = (stats: StatProps[], isFull = false) => {
   return stats.map((statProps, i) => {
     return (
       <SignalKStat key={`SignalKStat_${i}`} isFull={isFull} {...statProps} />

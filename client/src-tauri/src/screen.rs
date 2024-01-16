@@ -1,5 +1,5 @@
-use rppal::pwm::{Channel, Pwm};
 use log::info;
+use rppal::pwm::{Channel, Pwm};
 
 // create pwm pin reference
 // enable pin
