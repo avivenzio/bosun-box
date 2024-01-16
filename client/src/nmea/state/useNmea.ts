@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
+import camelCase from "lodash/camelCase";
 
 interface NMEAData {
   latitude?: number;
@@ -8,7 +9,7 @@ interface NMEAData {
   sogKnots?: number;
   cogTrue?: number;
   cogMagnetic?: number;
-  depth?: number;
+  depthRelativeTransducer?: number;
   bearing?: number;
 }
 
@@ -38,7 +39,7 @@ export const useNmea = () => {
             return data.reduce((acc, { key, value }) => {
               return {
                 ...acc,
-                [key]: value,
+                [camelCase(key)]: value,
               };
             }, old);
           });

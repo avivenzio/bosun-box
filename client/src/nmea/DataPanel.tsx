@@ -5,7 +5,8 @@ import { useNmea } from "./state/useNmea";
 
 export const DataPanel = () => {
   const { nmeaState } = useNmea();
-
+  console.log('----');
+  console.log(nmeaState);
   return (
     <Box display="flex" flexDirection="column">
       <Box width="100%">
@@ -48,7 +49,7 @@ export const DataPanel = () => {
           headerText="Depth"
           stats={[
             {
-              data: nmeaState.depth,
+              data: nmeaState.depthRelativeTransducer,
               unit: "m",
             },
           ]}
