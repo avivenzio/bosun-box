@@ -1,4 +1,4 @@
-use log::{info, trace, warn};
+use log::info;
 use std::process::{Command, Output};
 
 use crate::utils;

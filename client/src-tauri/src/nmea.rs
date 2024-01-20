@@ -1,26 +1,50 @@
+use log::{error, info};
 use nmea_parser::*;
 use serde::Serialize;
 use std::clone::Clone;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::time::Duration;
+use std::error;
 
-pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) {
-    let port = serialport::new("/dev/ttyS0", 4_800)
+fn open_port() -> Result<Box<dyn SerialPort>> {
+    return serialport::new("/dev/ttyS0", 4_800)
         .timeout(Duration::from_millis(1000))
-        .open()
-        .expect("Failed to open serial port");
+        .open();
+}
+
+pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) -> Result<(), error::Error> {
+    let port_result = open_port();
+    let port = match port_result {
+        Ok(port_value) => port_value,
+        Err(error) => {
+            error!("error creating serial connection from serial connection - {}", error);
+            return Err(e);
+        }
+    };
 
     let mut reader = BufReader::new(port);
     let mut line_str = String::new();
     let mut parser = NmeaParser::new();
     let mut results_list = Vec::new();
     loop {
-        reader.read_line(&mut line_str).unwrap();
+        let read_line_result = reader.read_line(&mut line_str);
+        let read_line_size = match read_line_result {
+            Ok(val) => val,
+            Err(error) => {
+                error!("error reading line from serial connection - {}", error);
+                // if we can't read a line, keep going and assume we will be able to read the next one
+                line_str.clear();
+                results_list.clear();
+                continue;
+            }
+        };
+
         let parse_result = parser.parse_sentence(&line_str);
         let parsed_value = match parse_result {
             Ok(val) => val,
             Err(error) => {
+                error!("error parsing line as NMEA connection - {}", error);
                 line_str.clear();
                 results_list.clear();
                 continue;
@@ -29,13 +53,6 @@ pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) {
         match parsed_value {
             // RMC—Recommended Minimum Specific GNSS Data
             ParsedMessage::Rmc(rmc) => {
-                println!("Source:  {}", rmc.source);
-                println!("Speed:   {:.1} kts", rmc.sog_knots.unwrap());
-                println!("Bearing: {}°", rmc.bearing.unwrap());
-                println!("Time:    {}", rmc.timestamp.unwrap());
-                println!("Latitude:  {:.3}°", rmc.latitude.unwrap());
-                println!("Longitude: {:.3}°", rmc.longitude.unwrap());
-                println!("");
                 results_list.push(NmeaData {
                     key: String::from("latitude"),
                     value: rmc.latitude.unwrap(),
@@ -55,11 +72,6 @@ pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) {
             }
             // VTG—Course Over Ground and Ground Speed
             ParsedMessage::Vtg(vtg) => {
-                println!("Source:  {}", vtg.source);
-                println!("cog true: {}", vtg.cog_true.unwrap());
-                println!("cog magnetic: {}", vtg.cog_magnetic.unwrap());
-                println!("sog_knots:  {}", vtg.sog_knots.unwrap());
-                println!("");
                 results_list.push(NmeaData {
                     key: String::from("cog_true"),
                     value: vtg.cog_true.unwrap(),
@@ -75,8 +87,6 @@ pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) {
             }
             // DPT - Depth of Water
             ParsedMessage::Dpt(dpt) => {
-                println!("depth: {}", dpt.depth_relative_to_transducer.unwrap());
-                println!("");
                 results_list.push(NmeaData {
                     key: String::from("depth_relative_transducer"),
                     value: dpt.depth_relative_to_transducer.unwrap(),
@@ -96,6 +106,7 @@ pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) {
         line_str.clear();
         results_list.clear();
     }
+    Ok(());
 }
 
 #[derive(Serialize, Clone)]

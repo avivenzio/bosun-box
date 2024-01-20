@@ -1,15 +1,16 @@
-use log::info;
+use log::{error, info};
 use rppal::pwm::{Channel, Pwm};
-
-// create pwm pin reference
-// enable pin
-// set initial duty cycle
-// return a reference to pwm pin
 
 pub fn init() -> Pwm {
     // should be GPIO 18 - physical pin 12
     info!("Initializing screen");
-    let pwm = Pwm::new(Channel::Pwm0).unwrap();
+    let pwm_result = Pwm::new(Channel::Pwm0);
+    let pwm = match pwm_result {
+        Ok(val) => val,
+        Err(error) => {
+            error!("Failed to initialize brightness control pin - {}", error);
+        }
+    };
     pwm.set_frequency(100.0, 1.0);
     pwm.enable();
     return pwm;

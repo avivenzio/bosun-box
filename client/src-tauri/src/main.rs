@@ -2,12 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use rppal::pwm::Pwm;
 use simple_logger::SimpleLogger;
+use std::str;
+use tauri::Window;
+
 mod nmea;
 mod power;
 mod screen;
 mod utils;
-use std::str;
-use tauri::Window;
 
 struct AppState {
     brightness_pin: Pwm,
@@ -34,15 +35,31 @@ fn shutdown() {
     power::shutdown();
 }
 
-// init a background process on the command, and emit periodic events only to the window that used the command
 #[tauri::command]
 fn init_nmea(window: Window) {
     let handle_data = move |data: nmea::NMEAUpdate| {
-        window.emit("nmea_data", data).unwrap();
+        let emit_result = window.emit("nmea_data", data);
+        let pwm = match pwm_result {
+            Ok(val) => val,
+            Err(error) => {
+                log::error!("Error emitting nmea_data message - {}", error);
+            }
+        };
     };
     // handle data will take the parsed result & make the tauri event
     std::thread::spawn(move || {
-        nmea::begin_reading(handle_data);
+        let begin_reading_result = nmea::begin_reading(handle_data);
+        let _ = match begin_reading_result {
+            Ok(val) => {
+                // this function never returns so I doubt we will ever hit this case....
+                log::info!("nmea stream init successful");
+                return val;
+            },
+            Err(error) => {
+                log::error!("nmea stream failure - {}", error);
+                window.emit("nema_init_failure", "{}").unwrap();
+            }
+        };
     });
 }
 
