@@ -10,7 +10,7 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import { SettingsIcon } from "@chakra-ui/icons";
+import { SettingsIcon, RepeatIcon } from "@chakra-ui/icons";
 import React from "react";
 import { BrightnessSlider } from "./BrightnessSlider";
 import { ShutdownButton } from "./ShutdownButton";
@@ -19,12 +19,18 @@ import { ColorModeToggle } from "./ColorModeToggle";
 export const SettingsDrawerContainer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box borderStyle="solid" borderWidth="1px" padding="8px" borderRadius="lg">
+    <Box borderStyle="solid" borderWidth="1px" padding="8px" borderRadius="lg" display="flex" justifyContent="space-between">
       <IconButton
         aria-label="menu"
         size="lg"
         icon={<SettingsIcon />}
         onClick={onOpen}
+      />
+      <IconButton
+        aria-label="menu"
+        size="lg"
+        icon={<RepeatIcon />}
+        onClick={() => window.location.reload()}
       />
       <SettingsDrawer isOpen={isOpen} onClose={onClose} />
     </Box>

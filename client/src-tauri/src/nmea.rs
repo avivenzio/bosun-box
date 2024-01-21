@@ -1,35 +1,25 @@
-use log::{error, info};
+use log::error;
 use nmea_parser::*;
 use serde::Serialize;
 use std::clone::Clone;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::time::Duration;
-use std::error;
 
-fn open_port() -> Result<Box<dyn SerialPort>> {
+pub fn open_port() -> Result<Box<dyn serialport::SerialPort>, serialport::Error> {
     return serialport::new("/dev/ttyS0", 4_800)
         .timeout(Duration::from_millis(1000))
         .open();
 }
 
-pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) -> Result<(), error::Error> {
-    let port_result = open_port();
-    let port = match port_result {
-        Ok(port_value) => port_value,
-        Err(error) => {
-            error!("error creating serial connection from serial connection - {}", error);
-            return Err(e);
-        }
-    };
-
+pub fn begin_reading(port: Box<dyn serialport::SerialPort>, handle_data: impl Fn(NMEAUpdate)) -> Result<(), serialport::Error> {
     let mut reader = BufReader::new(port);
     let mut line_str = String::new();
     let mut parser = NmeaParser::new();
     let mut results_list = Vec::new();
     loop {
         let read_line_result = reader.read_line(&mut line_str);
-        let read_line_size = match read_line_result {
+        let _read_line_size = match read_line_result {
             Ok(val) => val,
             Err(error) => {
                 error!("error reading line from serial connection - {}", error);
@@ -106,7 +96,6 @@ pub fn begin_reading(handle_data: impl Fn(NMEAUpdate)) -> Result<(), error::Erro
         line_str.clear();
         results_list.clear();
     }
-    Ok(());
 }
 
 #[derive(Serialize, Clone)]

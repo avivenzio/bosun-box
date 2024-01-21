@@ -5,10 +5,9 @@ import { useNmea } from "./state/useNmea";
 
 export const DataPanel = () => {
   const { nmeaState } = useNmea();
-  console.log('----');
-  console.log(nmeaState);
+
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" gap="1">
       <Box width="100%">
         <DataCard
           headerText="Position"
@@ -24,7 +23,7 @@ export const DataPanel = () => {
           ]}
         />
       </Box>
-      <Box display="flex" width="100%">
+      <Box display="flex" width="100%" gap="1">
         <DataCard
           headerText="SOG"
           stats={[

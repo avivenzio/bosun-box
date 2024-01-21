@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use rppal::pwm::Pwm;
 use simple_logger::SimpleLogger;
-use std::str;
 use tauri::Window;
 
 mod nmea;
@@ -11,7 +10,7 @@ mod screen;
 mod utils;
 
 struct AppState {
-    brightness_pin: Pwm,
+    brightness_pin: Option<Pwm>,
 }
 
 fn init_state() -> AppState {
@@ -22,12 +21,33 @@ fn init_state() -> AppState {
 
 #[tauri::command]
 fn get_brightness(state: tauri::State<AppState>) -> String {
-    return screen::get_brightness(&state.brightness_pin).to_string();
+    match &state.brightness_pin {
+        None => {
+            // 100% brightness is the screen's default if pwm is not enabled
+            return String::from("1");
+        }
+        Some(pin) => {
+            return screen::get_brightness(pin).to_string();
+        }
+    }
 }
 
+
 #[tauri::command]
-fn set_brightness(brightness: f64, state: tauri::State<AppState>) {
-    screen::set_brightness(&state.brightness_pin, brightness);
+fn set_brightness(brightness: f64, state: tauri::State<AppState>) -> Result<(), utils::ErrorResponse> {
+    match &state.brightness_pin {
+        None => {
+            log::error!("no brightness pin found");
+            return Err(utils::ErrorResponse {
+                error_type: String::from("SET_PIN_FAILED"),
+                message:String::from("Failed to set brightness."),
+            });
+        }
+        Some(pin) => {
+            screen::set_brightness(pin, brightness);
+            return Ok(())
+        }
+    }
 }
 
 #[tauri::command]
@@ -36,31 +56,50 @@ fn shutdown() {
 }
 
 #[tauri::command]
-fn init_nmea(window: Window) {
+fn init_nmea(window: Window) -> Result<(), utils::ErrorResponse> {
+    // closure passed to raed function
+    // will send tauri events when data is read & parsed
     let handle_data = move |data: nmea::NMEAUpdate| {
         let emit_result = window.emit("nmea_data", data);
-        let pwm = match pwm_result {
+        match emit_result {
             Ok(val) => val,
             Err(error) => {
                 log::error!("Error emitting nmea_data message - {}", error);
             }
         };
     };
-    // handle data will take the parsed result & make the tauri event
+
+    // send error if port cannot be opened
+    let port_result = nmea::open_port();
+    let port = match port_result {
+        Ok(port_value) => port_value,
+        Err(error) => {
+            log::error!(
+                "error creating serial connection from serial connection - {}",
+                error
+            );
+            return Err(utils::ErrorResponse {
+                    error_type: String::from("NMEA_STREAM_FAILED"),
+                    message:String::from("Failed to initialize the NMEA connection."),
+                });
+        }
+    };
+
+    // spawn thread to read nmea data and respond with events
+    // TODO - is channel a better approach for this?
     std::thread::spawn(move || {
-        let begin_reading_result = nmea::begin_reading(handle_data);
+        let begin_reading_result = nmea::begin_reading(port, handle_data);
         let _ = match begin_reading_result {
-            Ok(val) => {
-                // this function never returns so I doubt we will ever hit this case....
+            Ok(_) => {
+                // this function has infinite loop so this will never return in Ok state
                 log::info!("nmea stream init successful");
-                return val;
-            },
+            }
             Err(error) => {
                 log::error!("nmea stream failure - {}", error);
-                window.emit("nema_init_failure", "{}").unwrap();
             }
         };
     });
+    return Ok(());
 }
 
 fn main() {

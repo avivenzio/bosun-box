@@ -15,6 +15,7 @@ pub fn shutdown() -> Output {
             .output()
             .expect("failed to execute process");
     }
+    // TODO: remove use of sudo
     return Command::new("sh")
         .arg("-c")
         .arg("sudo shutdown -h now")
