@@ -32,20 +32,22 @@ fn get_brightness(state: tauri::State<AppState>) -> String {
     }
 }
 
-
 #[tauri::command]
-fn set_brightness(brightness: f64, state: tauri::State<AppState>) -> Result<(), utils::ErrorResponse> {
+fn set_brightness(
+    brightness: f64,
+    state: tauri::State<AppState>,
+) -> Result<(), utils::ErrorResponse> {
     match &state.brightness_pin {
         None => {
             log::error!("no brightness pin found");
             return Err(utils::ErrorResponse {
                 error_type: String::from("SET_PIN_FAILED"),
-                message:String::from("Failed to set brightness."),
+                message: String::from("Failed to set brightness."),
             });
         }
         Some(pin) => {
             screen::set_brightness(pin, brightness);
-            return Ok(())
+            return Ok(());
         }
     }
 }
@@ -73,15 +75,15 @@ fn init_nmea(window: Window) -> Result<(), utils::ErrorResponse> {
     let port_result = nmea::open_port();
     let port = match port_result {
         Ok(port_value) => port_value,
-        Err(error) => {
+        Err(e) => {
             log::error!(
                 "error creating serial connection from serial connection - {}",
-                error
+                e
             );
             return Err(utils::ErrorResponse {
-                    error_type: String::from("NMEA_STREAM_FAILED"),
-                    message:String::from("Failed to initialize the NMEA connection."),
-                });
+                error_type: String::from("NMEA_STREAM_FAILED"),
+                message: String::from("Failed to initialize the NMEA connection."),
+            });
         }
     };
 

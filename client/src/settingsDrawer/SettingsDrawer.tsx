@@ -15,11 +15,19 @@ import React from "react";
 import { BrightnessSlider } from "./BrightnessSlider";
 import { ShutdownButton } from "./ShutdownButton";
 import { ColorModeToggle } from "./ColorModeToggle";
+import { FullscreenToggle } from "./FullScreenToggle";
 
 export const SettingsDrawerContainer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box borderStyle="solid" borderWidth="1px" padding="8px" borderRadius="lg" display="flex" justifyContent="space-between">
+    <Box
+      borderStyle="solid"
+      borderWidth="1px"
+      padding="8px"
+      borderRadius="lg"
+      display="flex"
+      justifyContent="space-between"
+    >
       <IconButton
         aria-label="menu"
         size="lg"
@@ -57,6 +65,7 @@ const SettingsDrawer = ({
 
         <DrawerFooter display="flex" justifyContent="space-between">
           <ColorModeToggle />
+          <FullscreenToggle />
           <ShutdownButton />
         </DrawerFooter>
       </DrawerContent>

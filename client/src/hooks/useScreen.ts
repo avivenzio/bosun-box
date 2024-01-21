@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { InvokeArgs, invoke } from "@tauri-apps/api/tauri";
-import { useToast } from '@chakra-ui/react'
+import { useToast } from "@chakra-ui/react";
 
 export interface ScreenConfig {
   brightness: number;
@@ -31,12 +31,12 @@ export const useScreenMutation = () => {
     },
     onError: () => {
       toast({
-          title: 'Failed to update brightness.',
-          status: 'error',
-          position:'top',
-          duration: 6000,
-          isClosable: true,
-        });
-    }
+        title: "Failed to update brightness.",
+        status: "error",
+        position: "top",
+        duration: 6000,
+        isClosable: true,
+      });
+    },
   });
 };

@@ -12,7 +12,10 @@ pub fn open_port() -> Result<Box<dyn serialport::SerialPort>, serialport::Error>
         .open();
 }
 
-pub fn begin_reading(port: Box<dyn serialport::SerialPort>, handle_data: impl Fn(NMEAUpdate)) -> Result<(), serialport::Error> {
+pub fn begin_reading(
+    port: Box<dyn serialport::SerialPort>,
+    handle_data: impl Fn(NMEAUpdate),
+) -> Result<(), serialport::Error> {
     let mut reader = BufReader::new(port);
     let mut line_str = String::new();
     let mut parser = NmeaParser::new();

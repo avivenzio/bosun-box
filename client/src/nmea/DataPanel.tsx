@@ -39,7 +39,7 @@ export const DataPanel = () => {
           stats={[
             {
               data: nmeaState.cogTrue,
-              unit: "Deg",
+              unit: "deg",
             },
           ]}
           flexGrow="1"
